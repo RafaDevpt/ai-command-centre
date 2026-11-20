@@ -1,0 +1,20 @@
+# Created by Redfox using Claude
+.env
+config/*
+!config/.gitkeep
+agents/codex/*
+!agents/codex/.gitkeep
+database/
+projects/*
+sessions/*
+attachments/*
+logs/*
+backups/*
+!*/.gitkeep
+.cache-npm/
+backend/.venv/
+**/__pycache__/
+.pytest_cache/
+frontend/node_modules/
+frontend/dist/
+run/

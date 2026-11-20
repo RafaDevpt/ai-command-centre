@@ -1,0 +1,149 @@
+# ===========================================================================
+# PT-PT: Integracao continua do AI Command Centre.
+#
+#        Quatro verificacoes independentes, cada uma sobre uma parte que pode
+#        partir sem as outras darem por isso:
+#        - Backend: lint (ruff) e testes (pytest) com Ollama, Codex e Claude
+#          falsos e SQLite temporario; nao e preciso nenhum fornecedor real.
+#        - Migracoes: aplica todas as migracoes a um PostgreSQL vazio e
+#          confirma que o esquema resultante e igual aos modelos. Os testes
+#          usam SQLite, por isso so isto prova que a BD de producao fica certa.
+#        - Frontend: verificacao de tipos, build de producao e lint.
+#        - Compose: o docker-compose.yml e valido.
+#
+# EN-UK: Continuous integration for AI Command Centre.
+#
+#        Four independent checks, each on a part that can break without the
+#        others noticing:
+#        - Backend: lint (ruff) and tests (pytest) with fake Ollama, Codex and
+#          Claude and a temporary SQLite; no real provider is needed.
+#        - Migrations: applies every migration to an empty PostgreSQL and
+#          confirms the resulting schema matches the models. Tests use SQLite,
+#          so only this proves the production database comes out right.
+#        - Frontend: type check, production build and lint.
+#        - Compose: docker-compose.yml is valid.
+#
+# Created by Redfox using Claude
+# ===========================================================================
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preparar Python / Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.lock
+
+      - name: Instalar dependencias / Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.lock ruff==0.14.0
+
+      - name: Lint (ruff)
+        run: python -m ruff check app tests ../scripts/claude_runner.py
+
+      - name: Testes (pytest) / Tests (pytest)
+        run: python -m pytest -q
+
+  migrations:
+    name: Migrations
+    runs-on: ubuntu-latest
+    # PT-PT: Base de dados descartavel do proprio runner, so para este job.
+    # EN-UK: Throw-away database on the runner, for this job only.
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: aicc
+          POSTGRES_PASSWORD: aicc
+          POSTGRES_DB: aicc
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U aicc" --health-interval 5s --health-timeout 5s --health-retries 10
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      AICC_DATABASE_URL: postgresql+psycopg://aicc:aicc@127.0.0.1:5432/aicc
+      AICC_DATA_DIR: /tmp/aicc
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preparar Python / Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements.lock
+
+      - name: Instalar dependencias / Install dependencies
+        run: pip install -r requirements.lock
+
+      - name: Aplicar migracoes / Apply migrations
+        run: alembic upgrade head
+
+      # PT-PT: Falha se os modelos mudaram sem migracao.
+      # EN-UK: Fails if the models changed without a migration.
+      - name: Esquema igual aos modelos / Schema matches the models
+        run: alembic check
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preparar Node / Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias / Install dependencies
+        run: npm ci --no-fund --no-audit
+
+      - name: Tipos e build / Types and build
+        run: npm run build
+
+      - name: Lint (oxlint)
+        run: npm run lint
+
+  compose:
+    name: Compose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # PT-PT: O Compose exige o .env e o ficheiro do segredo; aqui sao falsos.
+      # EN-UK: Compose needs .env and the secret file; here they are dummies.
+      - name: Ficheiros de exemplo / Placeholder files
+        run: |
+          cp .env.example .env
+          echo placeholder > config/db_password
+
+      - name: Validar docker-compose.yml / Validate docker-compose.yml
+        run: docker compose config -q

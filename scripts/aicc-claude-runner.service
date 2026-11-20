@@ -1,0 +1,19 @@
+# Modelo: ajuste os caminhos se o projecto não estiver em ~/ai-command-centre (%h = pasta pessoal).
+# Template: adjust the paths if the project is not in ~/ai-command-centre (%h = home directory).
+[Unit]
+Description=AI Command Centre Claude Code CLI runner
+After=default.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/ai-command-centre
+ExecStart=/usr/bin/python3 -I %h/ai-command-centre/scripts/claude_runner.py --socket %h/ai-command-centre/run/claude/claude.sock --cli %h/.local/bin/claude
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=true
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

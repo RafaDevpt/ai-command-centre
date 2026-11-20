@@ -1,0 +1,21 @@
+name: Feature request
+description: Suggest an improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem it solves
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Fits the project rules
+      options:
+        - label: Uses only official sign-in methods of the providers involved
+        - label: Keeps agents read-only unless the user approves an action

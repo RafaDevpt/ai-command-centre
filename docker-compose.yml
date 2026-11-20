@@ -1,0 +1,105 @@
+# AI Command Centre. Projecto Compose próprio: rede e volumes só seus.
+# Created by Redfox using Claude
+name: aicc
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aicc
+      POSTGRES_USER: aicc
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      # Sem "trust" no socket: palavra-passe obrigatória também localmente.
+      POSTGRES_INITDB_ARGS: "--auth-local=scram-sha-256 --auth-host=scram-sha-256"
+    command: ["postgres", "-c", "listen_addresses=", "-c", "shared_buffers=64MB", "-c", "max_connections=30"]
+    secrets: [db_password]
+    volumes:
+      - ./database/pgdata:/var/lib/postgresql/data
+      - ./database/socket:/var/run/postgresql
+    networks: [aicc_db]
+    shm_size: 128m
+    mem_limit: 512m
+    cap_drop: [ALL]
+    cap_add: [CHOWN, DAC_OVERRIDE, FOWNER, SETGID, SETUID]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "/var/run/postgresql", "-U", "aicc", "-d", "aicc"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/app.Dockerfile
+    image: aicc-app:local
+    restart: unless-stopped
+    # Rede do anfitrião para chegar ao Ollama em 127.0.0.1:11434 sem lhe mexer;
+    # a aplicação escuta só em AICC_HOST (127.0.0.1 por omissão).
+    network_mode: host
+    env_file: .env
+    environment:
+      AICC_DB_SOCKET_DIR: /run/aicc-db
+      AICC_DB_PASSWORD_FILE: /run/secrets/db_password
+      AICC_STATIC_DIR: /app/static
+      AICC_CODEX_SOCKET: /run/aicc-codex/codex.sock
+      AICC_CLAUDE_SOCKET: /run/aicc-claude/claude.sock
+    secrets: [db_password]
+    volumes:
+      - ./database/socket:/run/aicc-db
+      - ./projects:/data/ai-command-centre/projects
+      - ./sessions:/data/ai-command-centre/sessions
+      - ./attachments:/data/ai-command-centre/attachments
+      - ./logs:/data/ai-command-centre/logs
+      - ./run/codex:/run/aicc-codex
+      - ./run/claude:/run/aicc-claude:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    read_only: true
+    tmpfs: [/tmp]
+    mem_limit: 768m
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+
+  # Codex app-server oficial, isolado: não vê a BD, os segredos nem os anexos.
+  # Projectos só de leitura; credenciais do Codex em agents/codex (700).
+  # A aplicação fala com ele por um socket Unix em run/codex (sem portas).
+  codex:
+    image: aicc-app:local
+    restart: unless-stopped
+    command: ["python", "-m", "app.ponte_codex", "-c", "cli_auth_credentials_store=\"file\"",
+              "-c", "forced_login_method=\"chatgpt\""]
+    environment:
+      CODEX_HOME: /data/ai-command-centre/agents/codex
+      HOME: /tmp
+      AICC_CODEX_SOCKET: /run/aicc-codex/codex.sock
+      PATH: /app/bin:/usr/local/bin:/usr/bin:/bin
+    volumes:
+      - ./agents/codex:/data/ai-command-centre/agents/codex
+      - ./projects:/data/ai-command-centre/projects:ro
+      - ./logs:/data/ai-command-centre/logs
+      - ./run/codex:/run/aicc-codex
+    networks: [aicc_codex]
+    read_only: true
+    tmpfs: [/tmp]
+    mem_limit: 1g
+    pids_limit: 256
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,stat,sys; sys.exit(0 if stat.S_ISSOCK(os.stat('/run/aicc-codex/codex.sock').st_mode) else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  # Saída para a Internet só para o Codex falar com a OpenAI; sem portas publicadas.
+  aicc_codex: {}
+  aicc_db:
+    internal: true
+
+secrets:
+  db_password:
+    file: ./config/db_password
