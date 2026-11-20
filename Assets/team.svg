@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 620" width="860" height="620" role="img" aria-label="How the team works: your goal goes to a coordinator, who assigns sub-tasks to Claude Code, Codex and a local model; their results go to a shared board, which the coordinator reviews before writing the final answer. Risky actions wait for your approval.">
+  <title>How the team works</title>
+  <!-- Created by Redfox using Claude -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b1220"/><stop offset="1" stop-color="#151026"/></linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.1" fill="#fff" fill-opacity=".06"/></pattern>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#a78bfa"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#f59e0b"/></marker>
+  </defs>
+  <rect width="860" height="620" rx="20" fill="url(#bg)"/>
+  <rect width="860" height="620" rx="20" fill="url(#dots)"/>
+  <g font-family="Segoe UI,Inter,system-ui,sans-serif" text-anchor="middle">
+    <!-- goal -->
+    <rect x="250" y="28" width="300" height="62" rx="31" fill="#0f2420" stroke="#2dd4bf" stroke-width="2"/>
+    <text x="400" y="68" font-size="24" font-weight="700" fill="#f1f5f9">Your goal</text>
+    <line x1="400" y1="92" x2="400" y2="128" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a)"/>
+    <!-- coordinator -->
+    <rect x="215" y="132" width="370" height="96" rx="16" fill="#1a1430" stroke="#a78bfa" stroke-width="2.5"/>
+    <text x="400" y="172" font-size="26" font-weight="800" fill="#f1f5f9">Coordinator</text>
+    <text x="400" y="205" font-size="20" fill="#c4b5fd">plans · assigns · reviews</text>
+    <!-- arrows to members -->
+    <path d="M300 230 C300 260 135 255 135 286" fill="none" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#ap)"/>
+    <line x1="400" y1="230" x2="400" y2="284" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#ap)"/>
+    <path d="M500 230 C500 260 665 255 665 286" fill="none" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#ap)"/>
+    <!-- members -->
+    <rect x="22" y="290" width="226" height="104" rx="14" fill="#111a2e" stroke="#38bdf8" stroke-width="2"/>
+    <text x="135" y="332" font-size="23" font-weight="700" fill="#f1f5f9">Claude Code</text>
+    <text x="135" y="364" font-size="19" fill="#94a3b8">writes and checks code</text>
+    <rect x="287" y="290" width="226" height="104" rx="14" fill="#111a2e" stroke="#38bdf8" stroke-width="2"/>
+    <text x="400" y="332" font-size="23" font-weight="700" fill="#f1f5f9">Codex</text>
+    <text x="400" y="364" font-size="19" fill="#94a3b8">analysis and code</text>
+    <rect x="552" y="290" width="226" height="104" rx="14" fill="#111a2e" stroke="#38bdf8" stroke-width="2"/>
+    <text x="665" y="332" font-size="23" font-weight="700" fill="#f1f5f9">Local model</text>
+    <text x="665" y="364" font-size="19" fill="#94a3b8">quick, simple tasks</text>
+    <text x="400" y="420" font-size="17" fill="#64748b">work in parallel · each sees the others' results</text>
+    <!-- to board -->
+    <line x1="135" y1="396" x2="135" y2="448" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a)"/>
+    <line x1="400" y1="430" x2="400" y2="448" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a)"/>
+    <line x1="665" y1="396" x2="665" y2="448" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a)"/>
+    <!-- board -->
+    <rect x="22" y="452" width="756" height="66" rx="14" fill="#0b1a24" stroke="#94a3b8" stroke-width="2"/>
+    <text x="400" y="494" font-size="22" font-weight="700" fill="#f1f5f9">Shared board  +  conversation memory</text>
+    <!-- review loop -->
+    <path d="M780 485 L815 485 Q832 485 832 468 L832 197 Q832 180 815 180 L590 180" fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#ap)"/>
+    <text x="712" y="210" font-size="18" font-weight="600" fill="#c4b5fd">review</text>
+    <text x="712" y="234" font-size="16" fill="#a78bfa">done, or more work?</text>
+    <!-- outcomes -->
+    <rect x="70" y="548" width="300" height="52" rx="26" fill="#241a0b" stroke="#f59e0b" stroke-width="2"/>
+    <text x="220" y="581" font-size="20" font-weight="700" fill="#fde68a">Risky action → your approval</text>
+    <rect x="430" y="548" width="300" height="52" rx="26" fill="#0f2420" stroke="#2dd4bf" stroke-width="2"/>
+    <text x="580" y="581" font-size="20" font-weight="700" fill="#99f6e4">Final answer</text>
+  </g>
+</svg>

@@ -24,11 +24,44 @@
 
 <sub>Part of <a href="https://github.com/RafaDevpt/Personal-AI-Projects"><b>Personal AI Projects</b></a> by Redfox</sub>
 
+<br /><br />
+
+<sub><b>WORKS WITH</b></sub><br />
+<img src="https://img.shields.io/badge/Ollama-local_models-ffffff?style=for-the-badge&logo=ollama&logoColor=white&labelColor=0b1220&color=1e293b" alt="Ollama" />
+<img src="https://img.shields.io/badge/OpenAI-Codex-ffffff?style=for-the-badge&logo=openai&logoColor=white&labelColor=0b1220&color=1e293b" alt="OpenAI Codex" />
+<img src="https://img.shields.io/badge/Claude-Code-D97757?style=for-the-badge&logo=claude&logoColor=D97757&labelColor=0b1220&color=1e293b" alt="Claude Code" />
+
 </div>
 
 # 🛰️ AI Command Centre
 
 > **A self-hosted, private control room for AI: local models, OpenAI Codex and Claude Code, working together on one server.**
+
+<table>
+<tr>
+<td width="33%" valign="top" align="center">
+
+### 🤝
+**Agents as a team**<br />
+<sub>A coordinator splits the work; the agents do it in parallel and check each other.</sub>
+
+</td>
+<td width="33%" valign="top" align="center">
+
+### 🔐
+**Official sign-in only**<br />
+<sub>No API keys, browser cookies or unofficial proxies.</sub>
+
+</td>
+<td width="33%" valign="top" align="center">
+
+### 🛑
+**You stay in control**<br />
+<sub>Agents are read-only; anything risky waits for your approval.</sub>
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -46,29 +79,29 @@ It signs in to providers **only through their official methods** — no browser 
 
 A typical day with AI Command Centre, from first sign-in to finished work:
 
-### 1 · Sign in
+### 🔑 1 · Sign in
 The first account is created on the server from the command line, never through the web. After that, you sign in from any browser on your network — or from your phone, where, over HTTPS, the app installs to the home screen. Sessions last seven days; *Settings* lists the devices signed in and can sign out all the others at once.
 
-### 2 · Connect the AI providers
+### 🔌 2 · Connect the AI providers
 - **Ollama** is detected automatically; the app lists the models already installed and never downloads new ones on its own.
 - **OpenAI Codex** is connected with the official *Sign in with ChatGPT* flow: the app shows a short code, you open `auth.openai.com/codex/device` on any device and type it in. The sign-in stays on the server, inside the Codex container.
 - **Claude Code** uses the Claude Code CLI you have already signed in to on the server. A small runner passes requests to it with every tool switched off.
 
 The dashboard shows at a glance which providers are ready, together with CPU, memory and disk use.
 
-### 3 · Chat
+### 💬 3 · Chat
 Pick a provider and model, optionally a project, and type. Replies stream in as they are written, and you can stop one at any moment. Every conversation is saved, searchable and can be resumed later; text attachments are read into the conversation.
 
-### 4 · Organise work into projects
+### 📁 4 · Organise work into projects
 A project holds standing instructions (given to every model in that project), documents you upload, and a memory of facts and decisions. You add memory directly; when an agent wants to remember something, it only *proposes* it, and nothing reaches the shared context until you approve it. Each project sees only its own documents and memory.
 
-### 5 · Hand a goal to a team
+### 🤝 5 · Hand a goal to a team
 On the *Team* page you write a goal, choose a coordinator and the members, and set how many rounds they may take. The coordinator — Codex by default — splits the goal into sub-tasks and gives each to the member whose role fits best: for example, Codex to plan, Claude Code to write and review code, and a local model for the simpler jobs. Members work in parallel and can read each other's results on a shared board, which you can follow live. After each round the coordinator either writes the final answer or sends work back, sometimes asking one member to check another. You can leave notes for the next round, stop the team or retry a failed task, and follow-up requests continue in the same conversation with its memory.
 
-### 6 · Approve anything risky
+### ✅ 6 · Approve anything risky
 Agents start read-only. If one wants to run a command, change a file, install something or alter configuration, the request appears on the *Approvals* page with the full details. Nothing happens until you approve it; requests without an answer are refused after fifteen minutes. Every decision is recorded in the audit log.
 
-### 7 · Keep it safe
+### 💾 7 · Keep it safe
 `scripts/backup.sh` saves the database and the project files without stopping anything, and the containers restart cleanly: work interrupted by a restart is marked as such rather than left hanging.
 
 > The interface itself is in European Portuguese; this documentation is in British English.
@@ -93,25 +126,7 @@ Agents start read-only. If one wants to run a command, change a file, install so
 
 ## Team workflow
 
-```mermaid
-flowchart LR
-    U(["🧑 You<br/>goal + notes"]) --> C["🧭 Coordinator<br/>(Codex by default)"]
-    C -- "plan: sub-tasks by role" --> M1["🔧 Member<br/>Claude Code"]
-    C --> M2["⚙️ Member<br/>Codex"]
-    C --> M3["🧩 Member<br/>local model (Ollama)"]
-    M1 & M2 & M3 -- "results" --> B[("📋 Shared board<br/>+ conversation memory")]
-    B --> C
-    C -- "done?" --> F{{"✅ Final answer"}}
-    C -. "not yet: more work,<br/>or one member reviews another" .-> M1
-    M2 -. "command / file change" .-> A["🔐 Approvals"] -.-> U
-
-    classDef you fill:#0b1220,stroke:#2dd4bf,color:#f1f5f9;
-    classDef coord fill:#1a1430,stroke:#a78bfa,color:#f1f5f9;
-    classDef mem fill:#111a2e,stroke:#94a3b8,color:#f1f5f9;
-    classDef out fill:#0f2420,stroke:#2dd4bf,color:#f1f5f9;
-    classDef appr fill:#241a0b,stroke:#f59e0b,color:#f1f5f9;
-    class U you; class C coord; class M1,M2,M3,B mem; class F out; class A appr;
-```
+<p align="center"><img src="Assets/team.svg" width="100%" alt="How the team works: your goal goes to a coordinator, who assigns sub-tasks to Claude Code, Codex and a local model; their results go to a shared board, which the coordinator reviews before writing the final answer. Risky actions wait for your approval." /></p>
 
 1. **Plan** — the coordinator turns the goal into one to five concrete sub-tasks and assigns each to the member whose role fits best.
 2. **Work** — different members run in parallel; each one sees the shared board with what the others produced.
@@ -124,27 +139,7 @@ Conversations are persistent: follow-up requests continue on the same board, wit
 
 ## Architecture
 
-```mermaid
-flowchart TB
-    subgraph host["Your server"]
-        direction TB
-        subgraph aicc["Docker Compose project · aicc"]
-            APP["app<br/>FastAPI + React build<br/>127.0.0.1:3000"]
-            DB[("db<br/>PostgreSQL 17<br/>no TCP port")]
-            CX["codex<br/>official Codex app-server<br/>isolated container"]
-        end
-        OL["Ollama<br/>existing install"]
-        CR["Claude Code runner<br/>user service (optional)"]
-    end
-    PH["📱 Browser / PWA"] -->|"SSH tunnel or Tailscale"| APP
-    APP -->|"Unix socket"| DB
-    APP -->|"Unix socket"| CX
-    APP -->|"127.0.0.1:11434"| OL
-    APP -->|"Unix socket"| CR
-
-    classDef box fill:#111a2e,stroke:#a78bfa,color:#f1f5f9;
-    class APP,DB,CX,OL,CR,PH box;
-```
+<p align="center"><img src="Assets/architecture.svg" width="100%" alt="Architecture: a browser or phone reaches the app through an SSH tunnel or Tailscale. Inside the Docker Compose project, the app talks to PostgreSQL and to an isolated Codex container over Unix sockets. On the host, it talks to the existing Ollama install and to an optional Claude Code runner." /></p>
 
 - **One container** serves both the API and the built frontend; by default it listens on `127.0.0.1` only.
 - **PostgreSQL has no TCP port** — the app reaches it through a Unix socket on an internal network.
