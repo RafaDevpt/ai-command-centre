@@ -8,7 +8,7 @@ RUN npm run build
 
 # Codex app-server oficial (openai/codex, release fixa) + bubblewrap para a
 # sandbox. ADD --checksum falha a build se o SHA-256 não bater certo.
-FROM python:3.12-slim AS codex
+FROM python:3.15-slim AS codex
 ARG CODEX_REL=https://github.com/openai/codex/releases/download/rust-v0.170.0
 ADD --checksum=sha256:abcc363820de3c731b57f37bd05ef7e6a50a9de0ed1c13456d084dede95c5d00 \
     ${CODEX_REL}/codex-app-server-x86_64-unknown-linux-musl.tar.gz /dl/app-server.tar.gz
@@ -18,7 +18,7 @@ RUN mkdir -p /out && cd /dl && tar -xzf app-server.tar.gz && tar -xzf bwrap.tar.
  && mv codex-app-server-x86_64-unknown-linux-musl /out/codex-app-server \
  && mv bwrap-x86_64-unknown-linux-musl /out/bwrap && chmod 755 /out/*
 
-FROM python:3.12-slim
+FROM python:3.15-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 WORKDIR /app
 COPY backend/requirements.lock .
