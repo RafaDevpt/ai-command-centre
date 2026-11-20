@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Architecture: a browser or phone reaches the app through an SSH tunnel or Tailscale. Inside the Docker Compose project, the app talks to PostgreSQL and to an isolated Codex container over Unix sockets. On the host, it talks to the existing Ollama install and to an optional Claude Code runner.">
+  <title>Architecture</title>
+  <!-- Created by Redfox using Claude -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b1220"/><stop offset="1" stop-color="#151026"/></linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.1" fill="#fff" fill-opacity=".06"/></pattern>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+  </defs>
+  <rect width="800" height="600" rx="20" fill="url(#bg)"/>
+  <rect width="800" height="600" rx="20" fill="url(#dots)"/>
+  <g font-family="Segoe UI,Inter,system-ui,sans-serif" text-anchor="middle">
+    <!-- client -->
+    <rect x="240" y="24" width="320" height="62" rx="31" fill="#0f2420" stroke="#2dd4bf" stroke-width="2"/>
+    <text x="400" y="64" font-size="23" font-weight="700" fill="#f1f5f9">Browser · phone (PWA)</text>
+    <line x1="400" y1="88" x2="400" y2="148" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a)"/>
+    <text x="412" y="124" font-size="17" fill="#94a3b8" text-anchor="start">SSH tunnel or Tailscale</text>
+    <!-- server frame -->
+    <rect x="16" y="104" width="768" height="480" rx="18" fill="none" stroke="#334155" stroke-width="2" stroke-dasharray="8 7"/>
+    <text x="40" y="574" font-size="17" fill="#64748b" text-anchor="start">your server</text>
+    <!-- compose frame -->
+    <rect x="40" y="140" width="720" height="250" rx="16" fill="#111a2e" fill-opacity=".6" stroke="#a78bfa" stroke-width="2"/>
+    <text x="64" y="172" font-size="18" fill="#c4b5fd" text-anchor="start" font-weight="600">Docker Compose</text>
+    <!-- app -->
+    <rect x="250" y="156" width="300" height="96" rx="14" fill="#1a1430" stroke="#a78bfa" stroke-width="2.5"/>
+    <text x="400" y="196" font-size="25" font-weight="800" fill="#f1f5f9">app</text>
+    <text x="400" y="228" font-size="18" fill="#c4b5fd">FastAPI + React · 127.0.0.1</text>
+    <!-- db + codex -->
+    <line x1="320" y1="254" x2="200" y2="290" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a)"/>
+    <line x1="480" y1="254" x2="600" y2="290" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a)"/>
+    <rect x="64" y="294" width="290" height="80" rx="14" fill="#0b1220" stroke="#38bdf8" stroke-width="2"/>
+    <text x="209" y="328" font-size="22" font-weight="700" fill="#f1f5f9">PostgreSQL</text>
+    <text x="209" y="356" font-size="17" fill="#94a3b8">no TCP port · Unix socket</text>
+    <rect x="446" y="294" width="290" height="80" rx="14" fill="#0b1220" stroke="#38bdf8" stroke-width="2"/>
+    <text x="591" y="328" font-size="22" font-weight="700" fill="#f1f5f9">Codex</text>
+    <text x="591" y="356" font-size="17" fill="#94a3b8">isolated · official app-server</text>
+    <!-- host services -->
+    <path d="M385 254 L385 405 Q385 420 370 420 L224 420 Q209 420 209 435 L209 444" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#a)"/>
+    <path d="M415 254 L415 405 Q415 420 430 420 L576 420 Q591 420 591 435 L591 444" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#a)"/>
+    <rect x="64" y="450" width="290" height="80" rx="14" fill="#0b1a24" stroke="#94a3b8" stroke-width="2"/>
+    <text x="209" y="484" font-size="22" font-weight="700" fill="#f1f5f9">Ollama</text>
+    <text x="209" y="512" font-size="17" fill="#94a3b8">existing install · local models</text>
+    <rect x="446" y="450" width="290" height="80" rx="14" fill="#0b1a24" stroke="#94a3b8" stroke-width="2"/>
+    <text x="591" y="484" font-size="22" font-weight="700" fill="#f1f5f9">Claude Code</text>
+    <text x="591" y="512" font-size="17" fill="#94a3b8">optional runner · no tools</text>
+  </g>
+</svg>
