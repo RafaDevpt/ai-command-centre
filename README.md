@@ -42,6 +42,39 @@ It signs in to providers **only through their official methods** — no browser 
 
 ---
 
+## How it works
+
+A typical day with AI Command Centre, from first sign-in to finished work:
+
+### 1 · Sign in
+The first account is created on the server from the command line, never through the web. After that, you sign in from any browser on your network — or from your phone, where, over HTTPS, the app installs to the home screen. Sessions last seven days; *Settings* lists the devices signed in and can sign out all the others at once.
+
+### 2 · Connect the AI providers
+- **Ollama** is detected automatically; the app lists the models already installed and never downloads new ones on its own.
+- **OpenAI Codex** is connected with the official *Sign in with ChatGPT* flow: the app shows a short code, you open `auth.openai.com/codex/device` on any device and type it in. The sign-in stays on the server, inside the Codex container.
+- **Claude Code** uses the Claude Code CLI you have already signed in to on the server. A small runner passes requests to it with every tool switched off.
+
+The dashboard shows at a glance which providers are ready, together with CPU, memory and disk use.
+
+### 3 · Chat
+Pick a provider and model, optionally a project, and type. Replies stream in as they are written, and you can stop one at any moment. Every conversation is saved, searchable and can be resumed later; text attachments are read into the conversation.
+
+### 4 · Organise work into projects
+A project holds standing instructions (given to every model in that project), documents you upload, and a memory of facts and decisions. You add memory directly; when an agent wants to remember something, it only *proposes* it, and nothing reaches the shared context until you approve it. Each project sees only its own documents and memory.
+
+### 5 · Hand a goal to a team
+On the *Team* page you write a goal, choose a coordinator and the members, and set how many rounds they may take. The coordinator — Codex by default — splits the goal into sub-tasks and gives each to the member whose role fits best: for example, Codex to plan, Claude Code to write and review code, and a local model for the simpler jobs. Members work in parallel and can read each other's results on a shared board, which you can follow live. After each round the coordinator either writes the final answer or sends work back, sometimes asking one member to check another. You can leave notes for the next round, stop the team or retry a failed task, and follow-up requests continue in the same conversation with its memory.
+
+### 6 · Approve anything risky
+Agents start read-only. If one wants to run a command, change a file, install something or alter configuration, the request appears on the *Approvals* page with the full details. Nothing happens until you approve it; requests without an answer are refused after fifteen minutes. Every decision is recorded in the audit log.
+
+### 7 · Keep it safe
+`scripts/backup.sh` saves the database and the project files without stopping anything, and the containers restart cleanly: work interrupted by a restart is marked as such rather than left hanging.
+
+> The interface itself is in European Portuguese; this documentation is in British English.
+
+---
+
 ## Modules
 
 | Module | What it covers |
@@ -58,7 +91,7 @@ It signs in to providers **only through their official methods** — no browser 
 
 ---
 
-## How the team works
+## Team workflow
 
 ```mermaid
 flowchart LR
@@ -202,8 +235,6 @@ The database password lives in `config/db_password` and reaches the containers a
 | [Backup and restore](docs/BACKUP-RESTORE.md) | `scripts/backup.sh` and how to restore |
 | [Troubleshooting](docs/TROUBLESHOOTING.md) | Common problems and fixes |
 | [Changelog](docs/CHANGELOG.md) | What changed in each version |
-
-🇵🇹 Resumo em português: [LEIA-ME.md](LEIA-ME.md)
 
 ---
 
