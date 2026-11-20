@@ -45,7 +45,7 @@ jobs:
       run:
         working-directory: backend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Preparar Python / Set up Python
         uses: actions/setup-python@v5
@@ -87,7 +87,7 @@ jobs:
       AICC_DATABASE_URL: postgresql+psycopg://aicc:aicc@127.0.0.1:5432/aicc
       AICC_DATA_DIR: /tmp/aicc
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Preparar Python / Set up Python
         uses: actions/setup-python@v5
@@ -114,7 +114,7 @@ jobs:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Preparar Node / Set up Node
         uses: actions/setup-node@v4
@@ -136,7 +136,7 @@ jobs:
     name: Compose
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # PT-PT: O Compose exige o .env e o ficheiro do segredo; aqui sao falsos.
       # EN-UK: Compose needs .env and the secret file; here they are dummies.
