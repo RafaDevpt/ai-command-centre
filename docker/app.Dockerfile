@@ -1,5 +1,5 @@
 # AI Command Centre — imagem da aplicação (frontend + backend). Created by Redfox using Claude
-FROM node:24-bookworm-slim AS frontend
+FROM node:26-bookworm-slim AS frontend
 WORKDIR /f
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci --no-fund --no-audit
