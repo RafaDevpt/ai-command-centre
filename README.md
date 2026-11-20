@@ -182,15 +182,35 @@ No API keys are needed.
 
 ## Quick start
 
+**1. Get the code**
+
 ```bash
-git clone https://github.com/RafaDevpt/ai-command-centre.git
+git clone \
+https://github.com/RafaDevpt/ai-command-centre
 cd ai-command-centre
-./scripts/primeira-vez.sh                 # creates .env and the database password (never overwrites)
-docker compose up -d --build              # db, app, codex
-docker compose exec app python -m app.cli criar-utilizador <your-username>
 ```
 
-Then open <http://127.0.0.1:3000> on the server, or through an SSH tunnel:
+**2. Create the settings and the database password** — this never overwrites existing files:
+
+```bash
+./scripts/primeira-vez.sh
+```
+
+**3. Build and start** the three containers (`db`, `app` and `codex`):
+
+```bash
+docker compose up -d --build
+```
+
+**4. Create your account** — you are asked for the password, which is never shown:
+
+```bash
+docker compose exec app \
+  python -m app.cli \
+  criar-utilizador <your-name>
+```
+
+**5. Open the app** at <http://127.0.0.1:3000> on the server, or from another computer through an SSH tunnel:
 
 ```bash
 ssh -L 3000:127.0.0.1:3000 <server>
@@ -240,26 +260,37 @@ The database password lives in `config/db_password` and reaches the containers a
 
 ## Development
 
+**Backend** — the tests use fake Ollama, Codex and Claude and a temporary SQLite database, so no real provider is needed:
+
 ```bash
-# Backend
 cd backend
-uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements-dev.lock
-.venv/bin/python -m pytest -q          # fake Ollama, Codex and Claude; temporary SQLite
+uv venv --python 3.12 .venv
+uv pip install \
+  --python .venv/bin/python \
+  -r requirements-dev.lock
+.venv/bin/python -m pytest -q
 uvx ruff check app tests
-
-# Frontend
-cd frontend && npm ci && npm run build && npm run lint
 ```
 
+**Frontend:**
+
+```bash
+cd frontend
+npm ci
+npm run build
+npm run lint
 ```
-ai-command-centre/
-├── backend/            FastAPI app, Alembic migrations, tests
-├── frontend/           React + TypeScript + Vite (PWA)
-├── docker/             app image (frontend build + backend + official Codex binaries)
-├── docs/               documentation
-├── scripts/            first run, start-up, backup, Claude Code runner
-└── docker-compose.yml  db · app · codex
-```
+
+**Where things live:**
+
+| Path | Contents |
+| :--- | :--- |
+| `backend/` | FastAPI app, Alembic migrations, tests |
+| `frontend/` | React + TypeScript + Vite (PWA) |
+| `docker/` | App image: frontend build, backend and the official Codex binaries |
+| `docs/` | Documentation |
+| `scripts/` | First run, start-up, backup and the Claude Code runner |
+| `docker-compose.yml` | The `db`, `app` and `codex` services |
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for branches and checks.
 
